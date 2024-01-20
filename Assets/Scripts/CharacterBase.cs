@@ -1,28 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts
 {
-    public enum State 
-    {
-        Idle,
-        Dead,
-        Jump,
-        Walk
-    }
 
     public class CharacterBase : MonoBehaviour
     {
         [SerializeField] protected Animator animator;
         [SerializeField] protected Rigidbody2D rb;
         [SerializeField] protected float walkSpeed;
-        protected bool _isIdle = true;
-        protected bool _isDead = false;
-        protected bool _isJump = false;
-        protected bool _isWalk = false;
 
-        
+        protected const string IDLE_ANIMATION = "IsIdle";
+        protected const string DEAD_ANIMATION = "isDead";
+        protected const string JUMP_ANIMATION = "isJump";
+        protected const string WALK_ANIMATION = "isWalk";
+
+
+        protected bool isIdle = true;
+        protected bool isDead = false;
+        protected bool isJump = false;
+        protected bool isWalk = false;
+
+        protected void SetAnimationParameters()
+        {
+            animator.SetBool(IDLE_ANIMATION, isIdle);
+            animator.SetBool(DEAD_ANIMATION, isDead);
+            animator.SetBool (JUMP_ANIMATION, isJump);
+            animator.SetBool(WALK_ANIMATION, isWalk);
+        }
     }
     
 }

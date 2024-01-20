@@ -15,7 +15,7 @@ namespace Scripts
         [SerializeField] bool isHorizontal = false;
         [SerializeField] float yVelocity;
         [SerializeField] bool IsTouchGround;
-        State currentState;
+        BoxCollider2D foot;
         private void Awake()
         {
         }
@@ -23,39 +23,44 @@ namespace Scripts
         // Start is called before the first frame update
         void Start()
         {
-
+            foot = GetComponent<BoxCollider2D>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            animator.SetFloat("yVelocity", rb.velocity.y);
-            //if (capsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
-            //{
-            //    if (rb.velocity == Vector2.zero)
-            //    {
-            //        animator.SetBool("Idle", true);
-            //    }
-            //    else
-            //    {
-            //        animator.SetBool("Idle", false);
-            //        Walk();
-            //        FlipFace();
-            //    }
+            ConditionState();
+            Walk();
+            FlipFace();
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right,1f,LayerMask.GetMask("Ground"));
+            Debug.DrawRay(transform.position, hit.point, Color.yellow);
+            if(hit.collider != null)
+            {
+                Debug.Log(hit.collider.name);
 
-            //}
+            }
+        }
+
+        private void ConditionState()
+        {
+            animator.SetFloat("yVelocity", rb.velocity.y);
+            isWalk = isHorizontal;
+            isJump = !IsTouchGround;
+            if (isJump && isWalk)
+            {
+                isWalk = false;
+                isJump = true;
+            }
             if (capsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground")) && rb.velocity == Vector2.zero)
             {
-                animator.SetBool("Idle", _isIdle);
+                isIdle = true;
+                SetAnimationParameters();
             }
             else
             {
-                _isIdle = false;
-               // animator.SetBool("Idle", false);
+                isIdle = false;
             }
-            Walk();
-            FlipFace();
-
+            
         }
 
         private void OnMove(InputValue value)
@@ -68,18 +73,26 @@ namespace Scripts
         private void Walk()
         {
             isHorizontal = input.x != 0;
-            Vector2 myVelocity = new Vector2(input.x * walkSpeed, rb.velocity.y);
+            Vector2 myVelocity;
+            if (foot.IsTouchingLayers(LayerMask.GetMask("Ground")))
+            {
+                myVelocity = new Vector2(input.x * walkSpeed, rb.velocity.y);
+            }
+            else
+            {
+                myVelocity = rb.velocity;
+            }
             rb.velocity = myVelocity;
-            animator.SetBool("Walk", isHorizontal);
+            SetAnimationParameters();
         }
 
         private void OnJump(InputValue value)
         {
             if (isDie) { return; }
-            if (value.isPressed && capsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
-            {
+            if (value.isPressed && foot.IsTouchingLayers(LayerMask.GetMask("Ground")))
+            {           
                 rb.velocity = new Vector2(0, jumpSpeed);
-                animator.SetBool("Jump", true);
+                SetAnimationParameters() ;
             }
         }
 
@@ -88,7 +101,6 @@ namespace Scripts
             if (collision.gameObject.CompareTag("Ground"))
             {
                 IsTouchGround = true;
-                animator.SetBool("Jump", false);
             }
         }
 
