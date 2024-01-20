@@ -467,9 +467,9 @@ GameObject:
   - component: {fileID: 1877523594}
   - component: {fileID: 1877523593}
   - component: {fileID: 1877523592}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5682,9 +5682,9 @@ GameObject:
   - component: {fileID: 2112421957}
   - component: {fileID: 2112421960}
   - component: {fileID: 2112421961}
-  - component: {fileID: 2112421959}
   - component: {fileID: 2112421962}
   - component: {fileID: 2112421963}
+  - component: {fileID: 2112421959}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -5771,11 +5771,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25dc25c5d6822d64ebcac176f62efaf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 2112421963}
+  rb: {fileID: 2112421961}
+  walkSpeed: 5
+  capsuleCollider: {fileID: 2112421960}
   input: {x: 0, y: 0}
   isDie: 0
-  walkSpeed: 5
   jumpSpeed: 15
   isHorizontal: 0
+  yVelocity: 0
+  IsTouchGround: 0
 --- !u!70 &2112421960
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
